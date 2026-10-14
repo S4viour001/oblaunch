@@ -107,7 +107,7 @@ export default function LaunchFeeSettings({ feePips, beneficiary, address, split
             </div>
           )}
           <div>
-            <dt>Openlaunch</dt>
+            <dt>Oblaunch</dt>
             <dd className={styles.platform}>0%</dd>
           </div>
         </dl>

@@ -29,10 +29,10 @@ function NetworkMark({ chain }: { chain: BridgeChainId }) {
   return <span className={`${styles.networkMark} ${chain === 5042 ? styles.arcMark : ""}`} aria-hidden>{chain === 8453
     ? <Image src="/brand/base.svg" alt="" width={30} height={30} draggable={false} />
     : chain === 5042 ? <Image src="/brand/arc.svg" alt="" width={23} height={24} draggable={false} />
-    : <>
-      <Image className={styles.lightLogo} src="/brand/robinhood-black.svg" alt="" width={23} height={30} draggable={false} />
-      <Image className={styles.darkLogo} src="/brand/robinhood-white.svg" alt="" width={23} height={30} draggable={false} />
-    </>}</span>;
+      : <>
+        <Image className={styles.lightLogo} src="/brand/robinhood-black.svg" alt="" width={23} height={30} draggable={false} />
+        <Image className={styles.darkLogo} src="/brand/robinhood-white.svg" alt="" width={23} height={30} draggable={false} />
+      </>}</span>;
 }
 
 function AssetMark({ asset, size = 24 }: { asset: BridgeAsset; size?: number }) {
@@ -167,7 +167,7 @@ export default function BridgeDialog({ open, onOpenChange, restoreFocus }: {
             {transferring ? <Transfer bridge={bridge} /> : <BridgeForm bridge={bridge} connect={connect} />}
             <div className={styles.footer}>
               <a href="https://relay.link" target="_blank" rel="noreferrer">Powered by Relay <ArrowUpRight size={12} aria-hidden /></a>
-              <span>0 Openlaunch fee</span>
+              <span>0 Oblaunch fee</span>
             </div>
           </Dialog.Popup>
         </Dialog.Portal>
@@ -192,10 +192,10 @@ export function BridgeForm({ bridge: b, connect }: { bridge: Bridge; connect: ()
   const outputAmount = (value: string) => nativeAmount(formatUnits(BigInt(value), outputCurrency.decimals));
   const label = b.approvalBusy ? "Confirm USDC approval…" : b.allowanceLoading ? "Checking USDC permission…" : b.quoteLoading ? "Getting your quote…"
     : b.phase === "switching" ? "Confirm network switch…"
-    : b.phase === "confirming" ? "Confirm in your wallet…"
-    : needsRefresh ? "Refresh quote"
-    : reviewing && b.approvalRequired ? `Approve ${nativeAmount(b.amount)} USDC`
-    : reviewing ? `Bridge to ${destination.name}` : b.quoteError ? "Retry quote" : !b.canQuote ? "Enter an amount" : "Get quote";
+      : b.phase === "confirming" ? "Confirm in your wallet…"
+        : needsRefresh ? "Refresh quote"
+          : reviewing && b.approvalRequired ? `Approve ${nativeAmount(b.amount)} USDC`
+            : reviewing ? `Bridge to ${destination.name}` : b.quoteError ? "Retry quote" : !b.canQuote ? "Enter an amount" : "Get quote";
   const error = (!b.quoteRejection && b.quoteError) || b.error || b.storageError || b.approvalError;
 
   return (
