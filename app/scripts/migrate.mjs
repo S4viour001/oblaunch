@@ -23,6 +23,7 @@
  * image (Dockerfile copies db/ + this file; next.config.ts keeps `postgres`
  * external so it is traced into .next/standalone/node_modules).
  */
+
 import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { hostname } from "node:os";
@@ -67,7 +68,7 @@ const concurrent = concurrentText
 const hash = createHash("sha256").update(text).update(concurrentText).digest("hex");
 const appliedBy = process.env.FLY_IMAGE_REF || process.env.FLY_MACHINE_ID || hostname();
 
-const sql = postgres(url, { max: 1, connect_timeout: 15, idle_timeout: 5, onnotice: () => {} });
+const sql = postgres(url, { max: 1, connect_timeout: 15, idle_timeout: 5, onnotice: () => { } });
 const t0 = Date.now();
 let exitCode = 0;
 try {
@@ -112,13 +113,13 @@ try {
   }
   console.log(
     `migrate: ok schema=${hash.slice(0, 12)} ${changed ? "applied (new hash)" : "re-applied (unchanged)"} ` +
-      `tables=${tables} history=${history} ${Date.now() - t0}ms`,
+    `tables=${tables} history=${history} ${Date.now() - t0}ms`,
   );
 } catch (err) {
   const e = /** @type {{ message?: string; position?: string; code?: string }} */ (err);
   console.error(`migrate: FAILED ${e?.code ?? ""} ${e?.message ?? err}${e?.position ? ` (at char ${e.position})` : ""}`);
   exitCode = 1;
 } finally {
-  await sql.end({ timeout: 5 }).catch(() => {});
+  await sql.end({ timeout: 5 }).catch(() => { });
 }
 process.exit(exitCode);

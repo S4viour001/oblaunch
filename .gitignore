@@ -16,3 +16,5 @@ CLAUDE.md
 .vercel/
 .uploads/
 .launchpad-deployer.address
+.vercel
+.env*
