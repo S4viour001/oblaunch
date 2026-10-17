@@ -45,7 +45,7 @@ export default function LaunchHero({ configured }: { configured: boolean }) {
           </h1>
           <p className={HERO.copy}>
             {/* the brand as a plain word, once, above the fold: the title and footer alone read as a domain */}
-            <Link href="/about" className="font-semibold text-ink hover:text-brand underline decoration-line-strong underline-offset-4">oblaunch</Link> is the free, open-source launchpad on Base, Robinhood Chain and Arc. One transaction: your token, a Uniswap v4 pool, and a liquidity position locked forever. 100% of the supply goes into the pool at launch. You only pay gas.
+            <Link href="/about" className="font-semibold text-ink hover:text-brand underline decoration-line-strong underline-offset-4">oblaunch</Link> is the free launchpad on Base, Robinhood Chain and Arc. One transaction: your token, a Uniswap v4 pool, and a liquidity position locked forever. 100% of the supply goes into the pool at launch. You only pay gas.
           </p>
           <div className={HERO.actions}>
             {/* the header watches this id: while it is on screen the header CTA stays quiet (one filled blue per screen) */}
@@ -63,8 +63,8 @@ export default function LaunchHero({ configured }: { configured: boolean }) {
           </div>
           {/* the proofs: three small chips, each one a place to check the claim */}
           <ul className={HERO.proofs}>
-            <li><a href={`${BRAND_GITHUB}/blob/main/LICENSE`} target="_blank" rel="noreferrer" className={proof}><Scale size={14} aria-hidden="true" className="text-muted" />MIT licensed</a></li>
-            <li><a href={BRAND_GITHUB} target="_blank" rel="noreferrer" className={proof}><GithubMark /><span className="sm:hidden">Source</span><span className="hidden sm:inline">Source on GitHub</span><ArrowUpRight size={12} aria-hidden="true" className="text-muted" /></a></li>
+            {/* <li><a href={`${BRAND_GITHUB}/blob/main/LICENSE`} target="_blank" rel="noreferrer" className={proof}><Scale size={14} aria-hidden="true" className="text-muted" />MIT licensed</a></li>*/}
+            {/*<li><a href={BRAND_GITHUB} target="_blank" rel="noreferrer" className={proof}><GithubMark /><span className="sm:hidden">Source</span><span className="hidden sm:inline">Source on GitHub</span><ArrowUpRight size={12} aria-hidden="true" className="text-muted" /></a></li>*/}
             <li><Link href="/rules#contracts" className={proof}><ShieldCheck size={14} aria-hidden="true" className="text-up" />Verified contracts</Link></li>
           </ul>
           {!configured ? (

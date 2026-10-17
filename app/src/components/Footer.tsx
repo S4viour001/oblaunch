@@ -73,9 +73,9 @@ export default function Footer() {
 
         <div className={styles.bottom}>
           {/* the chart library's licence credit, on every page that can show a chart */}
-          <p>Open source. Open participation. Charts by <a href="https://www.tradingview.com/" target="_blank" rel="noreferrer" className={styles.credit}>TradingView</a>.</p>
+          <p>oblaunch.lol. Charts by <a href="https://www.tradingview.com/" target="_blank" rel="noreferrer" className={styles.credit}>TradingView</a>.</p>
           <div className={styles.utilities}>
-            <a href={`${BRAND_GITHUB}/blob/main/LICENSE`} target="_blank" rel="noreferrer" className={styles.license}>MIT licensed <ArrowUpRight size={12} aria-hidden="true" /></a>
+            {/* <a href={`${BRAND_GITHUB}/blob/main/LICENSE`} target="_blank" rel="noreferrer" className={styles.license}>MIT licensed <ArrowUpRight size={12} aria-hidden="true" /></a>*/}
             <a href="#site-top" className={styles.backTop}>Back to top <ArrowUp size={14} aria-hidden="true" /></a>
           </div>
         </div>
