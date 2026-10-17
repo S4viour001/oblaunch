@@ -17,4 +17,4 @@ export const SITE_TITLE = `${BRAND}: free token launchpad on Base, Robinhood & A
 export const SITE_DESCRIPTION = "Launch a token in one transaction on Base, Robinhood Chain or Arc. Zero platform fee, open source, 100% of supply locked as Uniswap v4 liquidity forever.";
 export const SOCIAL_DESCRIPTION = "Zero-fee, open-source token launchpad. One transaction, liquidity locked forever. Base + Robinhood Chain + Arc.";
 /** Old domain: kept alive as a redirect (on-chain metadata URIs of early launches point at it). */
-export const LEGACY_DOMAIN = "oblaunch.lol";
+export const LEGACY_DOMAIN = "basepad.lol";
