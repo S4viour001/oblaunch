@@ -139,7 +139,7 @@ function WalletDashboard({ address, isConnected }: { address: Address | undefine
       const hash = await wallet.writeContract(request);
       const receipt = await pub.waitForTransactionReceipt({ hash });
       if (receipt.status !== "success") throw new Error("Transaction reverted on-chain.");
-      await fetch(`/api/launch/sync?chain=${l.chain}&tx=${hash}`, { method: "POST" }).catch(() => {});
+      await fetch(`/api/launch/sync?chain=${l.chain}&tx=${hash}`, { method: "POST" }).catch(() => { });
       toast({ kind: "collect", title: `Fees collected for ${l.symbol}`, sub: isBurnOnly(l.recipients) ? "Burned on the spot" : "Paid to the beneficiaries", chain: l.chain, token: l.token, symbol: l.symbol });
       await load();
     } catch (e) {
@@ -181,7 +181,7 @@ function WalletDashboard({ address, isConnected }: { address: Address | undefine
             <Link href="/#launches" className={styles.browseLink}>Just exploring? Browse launches<ArrowUpRight size={15} aria-hidden="true" /></Link>
           </div>
         </section>
-        <div className={styles.disclosure}><span>One wallet. Every chain.</span><p>This dashboard reads public on-chain activity. There is no separate openlaunch account.</p></div>
+        <div className={styles.disclosure}><span>One wallet. Every chain.</span><p>This dashboard reads public on-chain activity. There is no separate oblaunch account.</p></div>
       </div>
     );
   }
@@ -228,28 +228,28 @@ function WalletDashboard({ address, isConnected }: { address: Address | undefine
           <TabsTab value="holdings">Holdings<span className={styles.tabCount}>{me.tokens.length}</span></TabsTab>
           <TabsTab value="trades">Trades<span className={styles.tabCount}>{me.trades.length}</span></TabsTab>
         </TabsList>
-      {/* launches */}
-      <TabsPanel value="launches">
-        <div className={styles.panelHeading}>
-          <div><h2>Your launches</h2><p>Manage details and collect trading fees.</p></div>
-          {collectable.length > 1 ? (
-            <button type="button" onClick={() => void collectAll()} disabled={busy !== null} className={styles.collectButton}>
-              <Coins size={15} aria-hidden="true" />{busy ? "Collecting…" : `Collect all (${collectable.length})`}
-            </button>
+        {/* launches */}
+        <TabsPanel value="launches">
+          <div className={styles.panelHeading}>
+            <div><h2>Your launches</h2><p>Manage details and collect trading fees.</p></div>
+            {collectable.length > 1 ? (
+              <button type="button" onClick={() => void collectAll()} disabled={busy !== null} className={styles.collectButton}>
+                <Coins size={15} aria-hidden="true" />{busy ? "Collecting…" : `Collect all (${collectable.length})`}
+              </button>
+            ) : null}
+          </div>
+          {me && me.launches.length === 0 ? (
+            <EmptyState icon="launches" title="Your first launch starts here." description="Tokens launched from this wallet will appear here, ready to manage." href="/launch" action="Launch a token" />
           ) : null}
-        </div>
-        {me && me.launches.length === 0 ? (
-          <EmptyState icon="launches" title="Your first launch starts here." description="Tokens launched from this wallet will appear here, ready to manage." href="/launch" action="Launch a token" />
-        ) : null}
-        <ul className={styles.tokenList}>
-          {me?.launches.map((l) => {
-            const share = feeShareBps(l.recipients, address);
-            const earned = earnedSides(l, share);
-            const earnedUsdRow = feeSidesUsd(earned, l.quote_decimals, l.price_quote, l.quote_usd);
-            const p = pending[key(l)];
-            const k = key(l);
-            return (
-              <li key={k} className={styles.launchRow}>
+          <ul className={styles.tokenList}>
+            {me?.launches.map((l) => {
+              const share = feeShareBps(l.recipients, address);
+              const earned = earnedSides(l, share);
+              const earnedUsdRow = feeSidesUsd(earned, l.quote_decimals, l.price_quote, l.quote_usd);
+              const p = pending[key(l)];
+              const k = key(l);
+              return (
+                <li key={k} className={styles.launchRow}>
                   <Link href={`/t/${l.chain}/${l.token}`} className={styles.tokenIdentity}>
                     <span className={styles.avatar}><TokenAvatar chain={l.chain} token={l.token} symbol={l.symbol} image={l.image_url} size={40} className="rounded-xl" /><ChainCorner chain={l.chain} /></span>
                     <div className="min-w-0">
@@ -286,74 +286,74 @@ function WalletDashboard({ address, isConnected }: { address: Address | undefine
                       <PencilLine size={14} aria-hidden="true" />Edit
                     </button>
                   </div>
-              </li>
-            );
-          })}
-        </ul>
-        <p className={styles.panelNote}><LockKeyhole size={14} aria-hidden="true" />Edits change your description, logo and links. Name, symbol, fee and beneficiaries cannot change.</p>
-      </TabsPanel>
+                </li>
+              );
+            })}
+          </ul>
+          <p className={styles.panelNote}><LockKeyhole size={14} aria-hidden="true" />Edits change your description, logo and links. Name, symbol, fee and beneficiaries cannot change.</p>
+        </TabsPanel>
 
-      {/* holdings */}
-      <TabsPanel value="holdings">
-        <div className={styles.panelHeading}><div><h2>Your holdings</h2><p>Current balances for tokens this wallet has traded here.</p></div></div>
-        {me.tokens.length === 0 ? <EmptyState icon="holdings" title="Your next discovery belongs here." description="After you trade a token, its balance and estimated value will appear in this view." href="/#launches" action="Explore launches" /> : null}
-        <ul className={styles.tokenList}>
-          {me?.tokens.map((t) => {
-            const bal = balances[key(t)];
-            const usd = bal == null ? null : holdingUsd(bal, t.price_quote, t.quote_usd);
-            return (
-              <li key={key(t)}>
-                <Link href={`/t/${t.chain}/${t.token}`} className={styles.holdingRow}>
-                  <span className={styles.avatar}><TokenAvatar chain={t.chain} token={t.token} symbol={t.symbol} image={t.image_url} size={36} className="rounded-xl" /><ChainCorner chain={t.chain} /></span>
-                  <div className="min-w-0 flex-1">
-                    <div className={styles.tokenName}>
-                      <span className="font-semibold text-ink truncate">{t.name}</span>
-                      <span className="font-mono text-xs text-muted">{t.symbol}</span>
-                      <QuoteBrandBadge quoteKey={t.quote_key} />
-                      {t.quote_key === "other" ? <UnlistedPairBadge symbol={t.quote_symbol} /> : null}
+        {/* holdings */}
+        <TabsPanel value="holdings">
+          <div className={styles.panelHeading}><div><h2>Your holdings</h2><p>Current balances for tokens this wallet has traded here.</p></div></div>
+          {me.tokens.length === 0 ? <EmptyState icon="holdings" title="Your next discovery belongs here." description="After you trade a token, its balance and estimated value will appear in this view." href="/#launches" action="Explore launches" /> : null}
+          <ul className={styles.tokenList}>
+            {me?.tokens.map((t) => {
+              const bal = balances[key(t)];
+              const usd = bal == null ? null : holdingUsd(bal, t.price_quote, t.quote_usd);
+              return (
+                <li key={key(t)}>
+                  <Link href={`/t/${t.chain}/${t.token}`} className={styles.holdingRow}>
+                    <span className={styles.avatar}><TokenAvatar chain={t.chain} token={t.token} symbol={t.symbol} image={t.image_url} size={36} className="rounded-xl" /><ChainCorner chain={t.chain} /></span>
+                    <div className="min-w-0 flex-1">
+                      <div className={styles.tokenName}>
+                        <span className="font-semibold text-ink truncate">{t.name}</span>
+                        <span className="font-mono text-xs text-muted">{t.symbol}</span>
+                        <QuoteBrandBadge quoteKey={t.quote_key} />
+                        {t.quote_key === "other" ? <UnlistedPairBadge symbol={t.quote_symbol} /> : null}
+                      </div>
+                      <div className={styles.tokenMeta}>
+                        {CHAIN_SHORT[t.chain]} · {t.my_buys} buys · {t.my_sells} sells · mc {capDisplay(t.fdv_quote, t.quote_usd, { key: t.quote_key, symbol: t.quote_symbol, decimals: t.quote_decimals }).compact}
+                      </div>
                     </div>
-                    <div className={styles.tokenMeta}>
-                      {CHAIN_SHORT[t.chain]} · {t.my_buys} buys · {t.my_sells} sells · mc {capDisplay(t.fdv_quote, t.quote_usd, { key: t.quote_key, symbol: t.quote_symbol, decimals: t.quote_decimals }).compact}
+                    <div className={styles.holdingValue}>
+                      <div className="text-ink font-bold">{bal === undefined ? "Reading…" : bal === null ? "—" : fmtCompact(Number(bal) / 1e18)}</div>
+                      <div className="text-[11px] text-muted">{bal === undefined ? "Reading…" : usd === null ? "USD unavailable" : fmtUsd(usd)}</div>
                     </div>
-                  </div>
-                  <div className={styles.holdingValue}>
-                    <div className="text-ink font-bold">{bal === undefined ? "Reading…" : bal === null ? "—" : fmtCompact(Number(bal) / 1e18)}</div>
-                    <div className="text-[11px] text-muted">{bal === undefined ? "Reading…" : usd === null ? "USD unavailable" : fmtUsd(usd)}</div>
-                  </div>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-        <p className={styles.panelNote}>Values are estimates from the latest indexed price, not a guaranteed trade quote. Refresh to read balances again.</p>
-      </TabsPanel>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          <p className={styles.panelNote}>Values are estimates from the latest indexed price, not a guaranteed trade quote. Refresh to read balances again.</p>
+        </TabsPanel>
 
-      {/* trades */}
-      <TabsPanel value="trades">
-        <div className={styles.panelHeading}><div><h2>Your trades</h2><p>The latest indexed buys and sells from this wallet.</p></div></div>
-        {me.trades.length === 0 ? <EmptyState icon="trades" title="A clean trading history." description="Your buys and sells will be listed here, with a transaction link for every trade." href="/#launches" action="Explore launches" /> : null}
-        {me && me.trades.length > 0 ? (
-          <div className={`${styles.tradeScroll} bb-scroll`} role="region" aria-label="Your trades table" tabIndex={0}>
-            <table className={styles.trades}>
-              <caption className="sr-only">Your latest indexed trades on Base, Robinhood Chain and Arc</caption>
-              <thead><tr><th scope="col">Side</th><th scope="col">Token / chain</th><th scope="col">Amount</th><th scope="col" className={styles.usdColumn}>USD value</th><th scope="col">Transaction</th></tr></thead>
-              <tbody className="font-mono tnum">
-                {me.trades.map((t) => (
-                  <tr key={`${t.chain}:${t.tx_hash}:${t.log_index}`} className="border-b border-line last:border-0">
-                    <td><span className={styles.tradeSide} data-side={t.is_buy ? "buy" : "sell"}>{t.is_buy ? <ArrowDownLeft size={14} aria-hidden="true" /> : <ArrowUpRight size={14} aria-hidden="true" />}{t.is_buy ? "Buy" : "Sell"}</span></td>
-                    <td><Link href={`/t/${t.chain}/${t.token}`}>{t.symbol}</Link> <span className={styles.tradeChain}>{CHAIN_SHORT[t.chain]}</span></td>
-                    <td>{fmtQuote(t.quote_raw, t.quote_decimals, t.quote_symbol)}</td>
-                    <td className={styles.usdColumn}>{t.usd !== null ? fmtUsd(t.usd) : "—"}</td>
-                    <td>
-                      <a href={explorerTx(t.chain, t.tx_hash)} target="_blank" rel="noreferrer" className={styles.txLink} aria-label={`View ${t.symbol} ${t.is_buy ? "buy" : "sell"} transaction on explorer`} suppressHydrationWarning>{now ? ago(t.block_time, now) : "View"}<ArrowUpRight size={13} aria-hidden="true" /></a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : null}
-      </TabsPanel>
+        {/* trades */}
+        <TabsPanel value="trades">
+          <div className={styles.panelHeading}><div><h2>Your trades</h2><p>The latest indexed buys and sells from this wallet.</p></div></div>
+          {me.trades.length === 0 ? <EmptyState icon="trades" title="A clean trading history." description="Your buys and sells will be listed here, with a transaction link for every trade." href="/#launches" action="Explore launches" /> : null}
+          {me && me.trades.length > 0 ? (
+            <div className={`${styles.tradeScroll} bb-scroll`} role="region" aria-label="Your trades table" tabIndex={0}>
+              <table className={styles.trades}>
+                <caption className="sr-only">Your latest indexed trades on Base, Robinhood Chain and Arc</caption>
+                <thead><tr><th scope="col">Side</th><th scope="col">Token / chain</th><th scope="col">Amount</th><th scope="col" className={styles.usdColumn}>USD value</th><th scope="col">Transaction</th></tr></thead>
+                <tbody className="font-mono tnum">
+                  {me.trades.map((t) => (
+                    <tr key={`${t.chain}:${t.tx_hash}:${t.log_index}`} className="border-b border-line last:border-0">
+                      <td><span className={styles.tradeSide} data-side={t.is_buy ? "buy" : "sell"}>{t.is_buy ? <ArrowDownLeft size={14} aria-hidden="true" /> : <ArrowUpRight size={14} aria-hidden="true" />}{t.is_buy ? "Buy" : "Sell"}</span></td>
+                      <td><Link href={`/t/${t.chain}/${t.token}`}>{t.symbol}</Link> <span className={styles.tradeChain}>{CHAIN_SHORT[t.chain]}</span></td>
+                      <td>{fmtQuote(t.quote_raw, t.quote_decimals, t.quote_symbol)}</td>
+                      <td className={styles.usdColumn}>{t.usd !== null ? fmtUsd(t.usd) : "—"}</td>
+                      <td>
+                        <a href={explorerTx(t.chain, t.tx_hash)} target="_blank" rel="noreferrer" className={styles.txLink} aria-label={`View ${t.symbol} ${t.is_buy ? "buy" : "sell"} transaction on explorer`} suppressHydrationWarning>{now ? ago(t.block_time, now) : "View"}<ArrowUpRight size={13} aria-hidden="true" /></a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : null}
+        </TabsPanel>
       </Tabs>
 
       <div className={styles.disclosure}><span>Public activity. Your signature.</span><p>Viewing is read-only. Collecting fees asks for a transaction; editing details asks for a signature.</p></div>

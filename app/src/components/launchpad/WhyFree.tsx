@@ -30,7 +30,7 @@ export default function WhyFree() {
         <div className="mt-4 rounded-xl border border-line bg-paper/60 p-3">
           <p className="text-[11px] font-medium text-body">Where a trading fee goes</p>
           <FeeShare label="The creator's wallets, or burned" pct={100} />
-          <FeeShare label="openlaunch" pct={0} />
+          <FeeShare label="oblaunch" pct={0} />
         </div>
 
         <div className="mt-3">
