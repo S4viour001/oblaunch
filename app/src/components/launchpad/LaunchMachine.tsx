@@ -19,7 +19,7 @@ import styles from "./LaunchMachine.module.css";
  * CHANGE YOUR TOKEN SYMBOL HERE.
  * Examples: "OL", "MASK", "OREO", "SOL", "XYZ".
  */
-const TOKEN_SYMBOL = "OLJ";
+const TOKEN_SYMBOL = "OLK";
 
 const stages = [
   {
